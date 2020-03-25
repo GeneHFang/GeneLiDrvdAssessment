@@ -7,3 +7,11 @@ export const action = (value) => {
     }
 }
 */
+
+//SET GRID TO NxN
+export const setGrid = (N) => {
+    return {
+        type: "SET_GRID",
+        payload: N
+    };
+};

@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
-
-
+import React from 'react';
 
 const Cell = (props) => {
-    
+    //BLANK DIV ACTS AS CELL
     return(
         <div className="cell" style={{backgroundColor:`${props.color}`}}>
-            
         </div>
     )
 }

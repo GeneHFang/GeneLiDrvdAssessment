@@ -6,3 +6,12 @@
   padding:20px;
 }
 
+#grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#grid-num {
+  text-align: center;
+}

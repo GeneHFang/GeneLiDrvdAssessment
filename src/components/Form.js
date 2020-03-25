@@ -3,9 +3,9 @@ import React, {useState} from 'react';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
-import { setGrid, setPieceColor, setPieceShape } from '../redux/actions/action';
+import { setGridNum, setPieceColor, setPieceShape } from '../redux/actions/action';
 const mapDispatchToProps = {
-    setGrid,
+    setGridNum,
     setPieceColor,
     setPieceShape,
 };
@@ -15,7 +15,8 @@ const mapStateToProps = (state) => {
         topColor: state.topColor,
         bottomColor: state.bottomColor,
         topShape: state.topShape,
-        bottomShape: state.bottomShape
+        bottomShape: state.bottomShape,
+        topTurn: state.topTurn
     });
 };
 
@@ -62,7 +63,7 @@ const Form = (props) => {
                             : {borderColor: 'red'}) }  
                 onChange={e=>{
                     setGridNum(e.target.value);
-                    props.setGrid(e.target.value);
+                    props.setGridNum(e.target.value);
                 }}
             />
             <p>Select player</p>

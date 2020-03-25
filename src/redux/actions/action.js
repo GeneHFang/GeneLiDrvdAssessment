@@ -9,6 +9,14 @@ export const action = (value) => {
 */
 
 //SET GRID TO NxN
+export const setGridNum = (N) => {
+    return {
+        type: "SET_GRID_NUM",
+        payload: N
+    };
+};
+
+//SET GRID TO GRID N
 export const setGrid = (N) => {
     return {
         type: "SET_GRID",
@@ -36,5 +44,20 @@ export const setPieceShape = (top, N) => {
             top: top,
             shape: N
         }
+    };
+};
+
+
+//TOGGLE CLICKED FLAG FOR INDIVIDUAL PIECES
+export const toggleClick = () => {
+    return {
+        type: "CLICK"
+    };
+};
+
+//TOGGLE PLAYER TURNS
+export const toggleTurn = () => {
+    return {
+        type: "TURN"
     };
 };

@@ -1,5 +1,5 @@
 //REACT DEPENDENCIES
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 
 //LOCAL DEPENDENCIES
@@ -7,75 +7,77 @@ import Cell from '../components/Cell';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
-
+import { setGrid } from '../redux/actions/action';
 const mapStateToProps = (state) => {
     return({
+        grid: state.grid,
         gridNum: state.gridNum,
         topColor: state.topColor,
         bottomColor: state.bottomColor,
     })
 };
-
+const mapDispatchToProps = {
+    setGrid,
+}
 
 const GridContainer = (props) => {
     //LOCALLY KEEP TRACK OF WHICH CELL IS WHICH COLOR
     let black = true;
-
-    //CREATE GRID
-    const createGrid = () => {
+    
+    //CREATE GRID MATRIX BASED ON GRIDNUM
+    useEffect( () => {
         let arr = [];
-        for (var i = 0 ; i < props.gridNum ; i++){
-            arr.push(createGridRow(i))
-        }
-        return arr;
+        for (var i = 0 ; i < props.gridNum ; i++)
+        {
+            let row = [];
+            for (var j = 0; j < props.gridNum ; j++)
+            {
+                if (i<2) { row.push("X"); }
+                else if (i > props.gridNum-3 ) { row.push("+"); }
+                else { row.push("O"); }
+            }
+            arr.push(row);
+        }    
+        props.setGrid(arr);
+    }, [props.gridNum]);
+
+    // //DEGUGGING
+    // useEffect(()=>{
+    //     console.log(props.grid)
+    // }, [props.grid]);
+
+
+    //CREATE GAME BOARD BASED ON GRID MATRIX
+    const createBoard = () => {
+        return props.grid.map(row => { 
+            if (props.gridNum % 2 === 0 ) { black=!black } //OFFSET TO ACCOUNT FOR EVEN GRID DIMENSIONS
+            return (
+                <Row>
+                    {createCells(row)}
+                </Row>
+            )
+        })
     }
-
-    //CREATE ROW FOR GRID
-    const createGridRow = (rowNum) => {
-        //TOGGLE FOR EVEN NUMBERED GRIDS TO KEEP CELLS CORRECT COLOR 
-        if (props.gridNum % 2 === 0 ) { black=!black }
-
-        //FLAG FOR GENERATING PIECE
-        let piece = rowWithPieces(rowNum);
-
-        return (
-            <Row>
-                {(piece 
-                    ? createGridCell(piece)
-                    : createGridCell())}
-            </Row>
-        )
+    const createCells = (row) => {
+        return row.map(cell => {
+            let color = (black ? 'gray' : 'white'); //CHANGED 'black' TO 'gray' TO GIVE BLACK PIECES BETTER VISIBILITY
+            black = !black;
+            if (cell === "X" || cell === "+") {   
+                    let pieceFlag = (cell === 'X' ? 'top' : 'bottom');
+                    return (<Col> <Cell piece={pieceFlag} color={color} /> </Col>);
+                }
+            else  { return (<Col> <Cell color={color} /> </Col>); }
+            })
     }
-
-    //CREATE CELL FOR GRID ROW AND PIECE IF pieceFlag CONTAINS A VALUE
-    const createGridCell = (pieceFlag = false) => {
-        let arr = [];
-        for (var i = 0 ; i < props.gridNum ; i++){
-            if (black) { arr.push(<Col> <Cell piece={pieceFlag} color="gray"/> </Col>); }
-            else { arr.push(<Col> <Cell piece={pieceFlag} color="white"/> </Col>); }
-
-            //TOGGLE BLACK OR WHITE
-            black=!black;
-        }
-        return arr;
-    }
-
-    //RETURNS "top" FOR FIRST TWO ROWS, "bottom" FOR BOTTOM TWO ROWS, AND BOOLEAN false FOR ALL OTHER ROWS  
-    const rowWithPieces = (rowNum) => {
-        if (rowNum <= 1) { return "top"; }
-        else if (rowNum >= props.gridNum-2) { return "bottom"; }
-        else { return false; }
-    }
-
 
     return(
         <div id="grid">
             <Grid fluid >
-                {createGrid()}
+                {createBoard()}
             </Grid>
         </div>
     )
 }
 
 
-export default connect(mapStateToProps)(GridContainer);
+export default connect(mapStateToProps,mapDispatchToProps)(GridContainer);

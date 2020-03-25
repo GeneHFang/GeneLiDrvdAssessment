@@ -1,17 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
+import { toggleClick } from '../redux/actions/action';
 const mapStateToProps = (state) => {
     return({
         topColor: state.topColor,
         topShape: state.topShape,
         bottomColor: state.bottomColor,
-        bottomShape: state.bottomShape
-    })
+        bottomShape: state.bottomShape,
+        clicked: state.clicked
+    });
+};
+const mapDispatchToProps = {
+    toggleClick
 }
 
 const Piece = (props) => {
+    //LOCAL STATE
+    const [clicked, setClicked] = useState(false);
 
     //DETERMINE SHAPE OF PIECES BASED ON USER SELECTION
     const shape = (topOrBottom) => {
@@ -33,11 +40,24 @@ const Piece = (props) => {
         }
     }
 
+    //PIECE CLICK HANDLER
+    const handleClick = (e) => {
+        if (!props.clicked) {
+            props.toggleClick();
+            setClicked(true);
+        }
+        else if (clicked && props.clicked)
+        {
+            props.toggleClick();
+            setClicked(false);
+        }
+    }
+
     return(
-        <div className="piece">
+        <div onClick={handleClick} className="piece" style={clicked ? {border:'3px solid #ccff15'} : {}}>
             {shape(props.color)}
         </div>
     );
 };
 
-export default connect(mapStateToProps)(Piece);
+export default connect(mapStateToProps,mapDispatchToProps)(Piece);

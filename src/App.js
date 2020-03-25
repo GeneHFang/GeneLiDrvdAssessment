@@ -1,5 +1,8 @@
+//REACT DEPENDENCIES
 import React from 'react';
 import './App.css';
+
+//LOCAL DEPENDENCIES
 import Form from './components/Form';
 import GridContainer from './containers/GridContainer';
 

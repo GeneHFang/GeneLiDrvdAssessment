@@ -2,18 +2,24 @@ import React, {useState} from 'react';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
-import { toggleClick } from '../redux/actions/action';
+import { toggleClick, hiLight, deHiLight, storePieceInfo } from '../redux/actions/action';
 const mapStateToProps = (state) => {
     return({
+        grid: state.grid,
+        gridNum: state.gridNum,
         topColor: state.topColor,
         topShape: state.topShape,
         bottomColor: state.bottomColor,
         bottomShape: state.bottomShape,
-        clicked: state.clicked
+        clicked: state.clicked,
+        turn: state.turn,
     });
 };
 const mapDispatchToProps = {
-    toggleClick
+    toggleClick,
+    hiLight,
+    deHiLight,
+    storePieceInfo
 }
 
 const Piece = (props) => {
@@ -40,17 +46,27 @@ const Piece = (props) => {
         }
     }
 
+    
+
     //PIECE CLICK HANDLER
     const handleClick = (e) => {
         if (!props.clicked) {
-            props.toggleClick();
-            setClicked(true);
+            //ONLY FUNCTIONS IF IT IS CORRESPONDING PLAYER'S TURN
+            if (props.turn === props.color){
+                props.toggleClick();
+                setClicked(true);
+                props.hiLight(props.row, props.col, props.grid, props.color);
+                props.storePieceInfo(props.row, props.col, props.color);
+            }
         }
         else if (clicked && props.clicked)
         {
             props.toggleClick();
             setClicked(false);
+            props.deHiLight(props.grid);
+            props.storePieceInfo();
         }
+
     }
 
     return(

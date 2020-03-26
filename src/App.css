@@ -7,6 +7,14 @@
   height:50px;
 }
 
+.hilight {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  border: 3px solid #54FFC3;
+}
+
 .piece {
   display: flex;
   justify-content: center;

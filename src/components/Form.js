@@ -3,11 +3,14 @@ import React, {useState} from 'react';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
-import { setGridNum, setPieceColor, setPieceShape } from '../redux/actions/action';
+import { setGridNum, setPieceColor, setPieceShape, setGrid, setTurn } from '../redux/actions/action';
 const mapDispatchToProps = {
     setGridNum,
     setPieceColor,
     setPieceShape,
+    setGrid,
+    setTurn
+
 };
 const mapStateToProps = (state) => {
     return({
@@ -16,7 +19,7 @@ const mapStateToProps = (state) => {
         bottomColor: state.bottomColor,
         topShape: state.topShape,
         bottomShape: state.bottomShape,
-        topTurn: state.topTurn
+        turn: state.turn
     });
 };
 
@@ -49,8 +52,27 @@ const Form = (props) => {
         props.setPieceShape(topOrBottom==="top", e.target.value)
     }
 
+    //RESETS BOARD
+    const boardReset = () => {
+        let arr = [];
+        for (var i = 0 ; i < props.gridNum ; i++)
+        {
+            let row = [];
+            for (var j = 0; j < props.gridNum ; j++)
+            {
+                if (i<2) { row.push("X"); }
+                else if (i > props.gridNum-3 ) { row.push("+"); }
+                else { row.push("O"); }
+            }
+            arr.push(row);
+        }    
+        props.setGrid(arr);
+        props.setTurn('top');
+    }
+
     return(
         <div id="grid-input">
+            <p>Current Turn : {props.turn}</p>
             <p>Input Cell Number</p>
             {(gridNum < 5 || gridNum > 20)
                 ? <p style={{color:'red', fontSize:'12px'}}>Please enter a valid number (5-20)</p>
@@ -117,6 +139,8 @@ const Form = (props) => {
                     onChange={handleRadioShape}
                     checked={determineChecked('square','shape')}
                     /> Square
+
+                <div className="button"><button onClick={boardReset}>Reset Board</button></div>
         </div>
     )
 };

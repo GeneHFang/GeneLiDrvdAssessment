@@ -6,8 +6,9 @@ const defaultState = {
     bottomColor: 'black',
     bottomShape: 'circle',
     clicked: false,
-    topTurn: true,
-    grid: []
+    turn: 'top',
+    grid: [],
+    hilightedPiece: {},
 }
 
 //REDUCER
@@ -40,9 +41,13 @@ const reducer = (prevState = defaultState, action) => {
         case "CLICK":
             return {...prevState, clicked: !prevState.clicked };
 
+        //HOLD PIECE INFORMATION FOR HILIGHTED PIECE
+        case "STORE_PIECE_INFO":
+            return {...prevState, hilightedPiece: action.payload} 
+
         //TOGGLE PLAYER TURNS
         case "TURN":
-            return {...prevState, topTurn: !prevState.topTurn };
+            return {...prevState, turn: action.payload };
 
         default:
             return prevState;

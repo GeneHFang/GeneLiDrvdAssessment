@@ -49,24 +49,24 @@ const GridContainer = (props) => {
 
     //CREATE GAME BOARD BASED ON GRID MATRIX
     const createBoard = () => {
-        return props.grid.map(row => { 
+        return props.grid.map((row, rowInd) => { 
             if (props.gridNum % 2 === 0 ) { black=!black } //OFFSET TO ACCOUNT FOR EVEN GRID DIMENSIONS
             return (
                 <Row>
-                    {createCells(row)}
+                    {createCells(row, rowInd)}
                 </Row>
             )
         })
     }
-    const createCells = (row) => {
-        return row.map(cell => {
+    const createCells = (row, rowInd) => {
+        return row.map((cell,colInd) => {
             let color = (black ? 'gray' : 'white'); //CHANGED 'black' TO 'gray' TO GIVE BLACK PIECES BETTER VISIBILITY
             black = !black;
             if (cell === "X" || cell === "+") {   
                     let pieceFlag = (cell === 'X' ? 'top' : 'bottom');
-                    return (<Col> <Cell piece={pieceFlag} color={color} /> </Col>);
+                    return (<Col> <Cell piece={pieceFlag} color={color} row={rowInd} col={colInd} /> </Col>);
                 }
-            else  { return (<Col> <Cell color={color} /> </Col>); }
+            else  { return (<Col> <Cell color={color} hilight={(cell === '/')} row={rowInd} col={colInd} /> </Col>); }
             })
     }
 

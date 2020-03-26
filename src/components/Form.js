@@ -3,23 +3,26 @@ import React, {useState} from 'react';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
-import { setGridNum, setPieceColor, setPieceShape, setGrid, setTurn } from '../redux/actions/action';
+import { setGridNum, setPieceColor, setPieceShape, setGrid, setTurn, save } from '../redux/actions/action';
 const mapDispatchToProps = {
     setGridNum,
     setPieceColor,
     setPieceShape,
     setGrid,
-    setTurn
-
+    setTurn,
+    save
 };
 const mapStateToProps = (state) => {
     return({
         gridNum: state.gridNum,
         topColor: state.topColor,
-        bottomColor: state.bottomColor,
         topShape: state.topShape,
+        bottomColor: state.bottomColor,
         bottomShape: state.bottomShape,
-        turn: state.turn
+        clicked: state.clicked,
+        turn: state.turn,
+        grid: state.grid,
+        hilightedPiece: state.hilightedPiece,
     });
 };
 
@@ -52,7 +55,7 @@ const Form = (props) => {
         props.setPieceShape(topOrBottom==="top", e.target.value)
     }
 
-    //RESETS BOARD
+    //RESETS BOARD AND DELETES SAVES
     const boardReset = () => {
         let arr = [];
         for (var i = 0 ; i < props.gridNum ; i++)
@@ -68,26 +71,59 @@ const Form = (props) => {
         }    
         props.setGrid(arr);
         props.setTurn('top');
+        props.save({});
+    }
+
+    //SAVES BOARD
+    const boardSave = () => {
+        let state = {
+            gridNum: props.gridNum,
+            topColor: props.topColor,
+            topShape: props.topShape,
+            bottomColor: props.bottomColor,
+            bottomShape: props.bottomShape,
+            clicked: props.clicked,
+            turn: props.turn,
+            grid: props.grid,
+            hilightedPiece: props.hilightedPiece,
+        };
+        props.save(state);
+        alert("Board saved!")
+    }
+
+    //FORM HANDLERS. 
+    const handleChange = (e)=>{
+        setGridNum(e.target.value);
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (window.confirm("Warning! Setting a new board size will reset the game. Confirm?")){
+            props.setGridNum(gridNum);
+        }
+        else {
+            setGridNum("");
+        }
     }
 
     return(
         <div id="grid-input">
-            <p>Current Turn : {props.turn}</p>
+            <p>Current Turn : {props.turn}</p> <br/>
             <p>Input Cell Number</p>
+            <p style={{fontSize:'10px'}}>(hit ENTER to submit changes)</p>
             {(gridNum < 5 || gridNum > 20)
                 ? <p style={{color:'red', fontSize:'12px'}}>Please enter a valid number (5-20)</p>
                 : null}
-            <input 
+            <form onSubmit={handleSubmit}>
+                <input 
                 id="grid-num"
                 type="text"
                 style={(gridNum >= 5 && gridNum <= 20 
                             ? {borderColor: 'green'}
-                            : {borderColor: 'red'}) }  
-                onChange={e=>{
-                    setGridNum(e.target.value);
-                    props.setGridNum(e.target.value);
-                }}
-            />
+                            : {borderColor: 'red'}) }
+                value={gridNum}
+                onChange={handleChange}
+                />
+            </form>
             <p>Select player</p>
             <select id="select-player" onChange={e=>setTopOrBottom(e.target.value)}>
                 <option value="top">Top</option>
@@ -140,7 +176,7 @@ const Form = (props) => {
                     checked={determineChecked('square','shape')}
                     /> Square
 
-                <div className="button"><button onClick={boardReset}>Reset Board</button></div>
+                <div className="button"><button onClick={boardSave} >Save Board</button>  <button onClick={boardReset}>Reset Board</button></div>
         </div>
     )
 };

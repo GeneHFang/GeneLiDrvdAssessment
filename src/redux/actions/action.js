@@ -136,3 +136,11 @@ export const setTurn = (turn) => {
         payload: turn
     };
 };
+
+//CREATE PERSISTANT SAVE STATE
+export const save = (state) => {
+    return {
+        type: "SAVE",
+        payload: state
+    }
+}

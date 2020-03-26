@@ -2,18 +2,30 @@
 import { 
     createStore, 
     applyMiddleware,
-    //combineReducers 
 } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 
 //REDUCER
 import reducer from './reducers/reducer';
+
+//PERSIST CONFIG
+const persistConfig = {
+    key: 'root',
+    storage,
+}
+const persistedReducer = persistReducer(persistConfig, reducer);
 
 // COMBINE IF NEEDED
 // const rootReducer = combineReducers({
 //     first: reducer,
 // })
 
+
 //STORE
-const store = createStore(reducer, applyMiddleware(thunk));
-export default store; 
+
+    export let store = createStore(persistedReducer, applyMiddleware(thunk));
+    export let persistor = persistStore(store);
+
+ 

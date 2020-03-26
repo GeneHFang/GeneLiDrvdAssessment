@@ -9,6 +9,7 @@ const defaultState = {
     turn: 'top',
     grid: [],
     hilightedPiece: {},
+    save: {},
 }
 
 //REDUCER
@@ -48,6 +49,14 @@ const reducer = (prevState = defaultState, action) => {
         //TOGGLE PLAYER TURNS
         case "TURN":
             return {...prevState, turn: action.payload };
+
+        //SAVE BOARD
+        case "SAVE":
+            return {...prevState, save: action.payload }
+
+        //PERSIST
+        case "persist/REHYDRATE":
+            return {...prevState, persistedState: action.payload };
 
         default:
             return prevState;

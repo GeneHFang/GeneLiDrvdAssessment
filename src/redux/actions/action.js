@@ -28,6 +28,7 @@ export const setGrid = (N) => {
 export const hiLight = (row, col, grid, topOrBottom) => {
     let copy = JSON.parse(JSON.stringify(grid));
     let leftMove, rightMove;
+    if (!copy[row][col].includes('h')) { copy[row][col] = copy[row][col]+'h'; }
     if (topOrBottom === 'top'){
         if( copy[row+1] ){
             leftMove = copy[row+1][col-1];
@@ -52,6 +53,7 @@ export const hiLight = (row, col, grid, topOrBottom) => {
 
 //DEHIGHLIGHT CELLS
 export const deHiLight = (grid) => {
+    console.log('delight')
     let copy = JSON.parse(JSON.stringify(grid));
     copy.forEach((row, rowIndex)=>{
         row.forEach((col, colIndex)=> {
@@ -59,6 +61,8 @@ export const deHiLight = (grid) => {
             {
                 copy[rowIndex][colIndex] = 'O';
             }
+            if (col === 'Xh') { copy[rowIndex][colIndex] = 'X'; }
+            if (col === '+h') { copy[rowIndex][colIndex] = '+'; }
         })
     })
     return {

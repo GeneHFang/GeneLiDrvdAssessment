@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
@@ -26,6 +26,19 @@ const Piece = (props) => {
     //LOCAL STATE
     const [clicked, setClicked] = useState(false);
 
+    //HANDLE LOCAL CLICKED STATE WHEN GRID IS RELOADED
+    useEffect(()=>{
+        if (props.cell === 'Xh' || props.cell === '+h' )
+        { 
+            setClicked(true);
+        }
+        else { setClicked(false); }
+    },[props.grid]);
+    useEffect(()=> {
+        setClicked(false);
+        props.deHiLight(props.grid);
+    },[props.turn])
+
     //DETERMINE SHAPE OF PIECES BASED ON USER SELECTION
     const shape = (topOrBottom) => {
         let shapeKey = topOrBottom+"Shape";
@@ -45,8 +58,6 @@ const Piece = (props) => {
                 return( <div className='circle' style={{ background: props[colorKey] }} /> );
         }
     }
-
-    
 
     //PIECE CLICK HANDLER
     const handleClick = (e) => {

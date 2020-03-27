@@ -3,14 +3,16 @@ import React, {useState} from 'react';
 
 //REDUX DEPENDENCIES
 import { connect } from 'react-redux';
-import { setGridNum, setPieceColor, setPieceShape, setGrid, setTurn, save } from '../redux/actions/action';
+import { setGridNum, setPieceColor, setPieceShape, setGrid, setTurn, save, deHiLight, toggleClick } from '../redux/actions/action';
 const mapDispatchToProps = {
     setGridNum,
     setPieceColor,
     setPieceShape,
     setGrid,
     setTurn,
-    save
+    save,
+    deHiLight,
+    toggleClick
 };
 const mapStateToProps = (state) => {
     return({
@@ -55,7 +57,7 @@ const Form = (props) => {
         props.setPieceShape(topOrBottom==="top", e.target.value)
     }
 
-    //RESETS BOARD AND DELETES SAVES
+    //RESETS BOARD AND DELETES PREVIOUS SAVE. PROMPTS USER ABOUT PIECE SHAPE/COLOR RESET 
     const boardReset = () => {
         let arr = [];
         for (var i = 0 ; i < props.gridNum ; i++)
@@ -68,10 +70,23 @@ const Form = (props) => {
                 else { row.push("O"); }
             }
             arr.push(row);
+        }
+        props.deHiLight(props.grid);
+        if (props.clicked) {props.toggleClick();}
+        if (window.confirm("Would you like to reset all piece colors and shapes?")){
+            props.setPieceColor(true, 'red');
+            props.setPieceShape(true, 'circle');
+            props.setPieceColor(false, 'black');
+            props.setPieceShape(false, 'circle');
         }    
         props.setGrid(arr);
         props.setTurn('top');
         props.save({});
+        fetch('http://localhost:4000/board/reset', {method: 'DELETE'})
+            .then(res=>res.json())
+            .then(data=>{
+                alert("board reset");
+            })
     }
 
     //SAVES BOARD
@@ -88,7 +103,29 @@ const Form = (props) => {
             hilightedPiece: props.hilightedPiece,
         };
         props.save(state);
-        alert("Board saved!")
+
+        let stringifiedGrid ={
+            board:`[${props.grid.map(array=>`[${array.toString()}]`).toString()}]`
+        }
+        let body = {...stringifiedGrid, ...state};
+        delete body.grid;
+        console.log(JSON.stringify(body))
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body),
+        }
+        fetch('http://localhost:4000/board/set', options)
+            .then(res=>res.json())
+            .then(data=>{
+                console.log(data)
+                alert("Board saved!")
+            })
+            .catch(err=>{
+                console.log(err)
+            });
     }
 
     //FORM HANDLERS. 

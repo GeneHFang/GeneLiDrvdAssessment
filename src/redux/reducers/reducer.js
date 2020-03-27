@@ -48,7 +48,8 @@ const reducer = (prevState = defaultState, action) => {
 
         //TOGGLE PLAYER TURNS
         case "TURN":
-            return {...prevState, turn: action.payload };
+            console.log("turned");
+            return {...prevState, turn: action.payload, clicked: false };
 
         //SAVE BOARD
         case "SAVE":
